@@ -4,7 +4,7 @@ OsloMet brukernavn: s375162
 
 GitHub brukernavn: liban0610
 
-Github repo URL: 
+Github repo URL: https://github.com/liban0610/Oblig3-Data1700.git
 
 Fullt navn: Liban Olad Sulub
 
