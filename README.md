@@ -4,7 +4,7 @@ OsloMet brukernavn: s375162
 
 GitHub brukernavn: liban0610
 
-Github repo URL:
+Github repo URL: 
 
 Fullt navn: Liban Olad Sulub
 
