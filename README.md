@@ -6,7 +6,7 @@ GitHub brukernavn: liban0610
 
 Github repo URL: https://github.com/liban0610/Oblig3-Data1700.git
 
-Youtube video URL: https://youtu.be/48ylVjAs6HA
+Youtube video URL: https://youtu.be/H1FzSCaTMIY 
 
 Fullt navn: Liban Olad Sulub
 
