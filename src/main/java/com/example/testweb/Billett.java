@@ -10,6 +10,9 @@ public class Billett {
     private String tlfnr;
     private String epost;
 
+    public Billett(){
+
+    }
     public Billett(int id, int antall, String fornavn, String etternavn, String tlfnr, String epost){
         this.id=id;
         this.antall=antall;
@@ -18,9 +21,7 @@ public class Billett {
         this.tlfnr=tlfnr;
         this.epost=epost;
     }
-    public Billett(){
 
-    }
 
     public int getId() {
         return id;

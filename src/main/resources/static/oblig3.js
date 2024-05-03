@@ -1,74 +1,64 @@
-$(function (){
+$(function () {
     hentAlleFilmer();
 });
-function hentAlleFilmer(){
-    $.get("hentFilmer", function (film){
-        formaterFilm(film);
+
+function hentAlleFilmer() {
+    $.get("/hentFilmer", function (filmer) {
+        formaterFilm(filmer);
     });
 }
 
-function formaterFilm(film){
-    let slct="<select class='form-select' id='slctFilm'>";
-    for (const filmer of film){
-        slct+= "<option>" + filmer.film + "</option>";
+function formaterFilm(filmer) {
+    let slct = "<select class='form-select' id='slctFilm'>";
+    slct += "<option disabled selected>Velg en film</option>";
+    for (const film of filmer) {
+        slct += "<option value='" + film.film + "'>" + film.film + "</option>";
     }
     slct += "</select>";
     $("#film").html(slct);
 }
 
-
-
 function kjopBillett() {
     function sjekkValidasjon() {
         let validasjon = true;
+        const regexNavn = /^[a-zA-ZæøåÆØÅ. \-]{2,20}$/; //regex
+        const regexTelefon = /^\+?\d{8,}$/;
+        const regexEpost = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
         if ($("#slctFilm").val() === "Velg en film") {
             $("#nullFilm").html("Du må velge en film");
             validasjon = false;
-
         }
-        if ($("#inpAntall").val() === "") {
-            $("#nullAntall").html("Du må skrive inn et antall");
+
+        if (!/^\d+$/.test($("#inpAntall").val())) {
+            $("#nullAntall").html("Du må skrive inn et gyldig antall");
             validasjon = false;
         }
 
-        if ($("#inpFornavn").val() === "") {
-            $("#nullFornavn").html("Du må skrive et fornavn");
+        if (!regexNavn.test($("#inpFornavn").val())) {
+            $("#nullFornavn").html("Du må skrive et gyldig fornavn");
             validasjon = false;
         }
 
-        if ($("#inpEtternavn").val() === "") {
-            $("#nullEtternavn").html("Du må skrive et etternavn");
-            validasjon = false;
-
-        }
-
-        if ($("#inpTelefonnr").val() === "") {
-            $("#nullTelefonnr").html("Du må skrive et telefonnummer");
-
+        if (!regexNavn.test($("#inpEtternavn").val())) {
+            $("#nullEtternavn").html("Du må skrive et gyldig etternavn");
             validasjon = false;
         }
 
-
-        else if (isNaN($("#inpTelefonnr").val())) {
-            $("#nullTelefonnr").html("Du må skrive telefonnummer med tall");
-
-            validasjon = false;
-
-        }
-        else {
-            $("#nullTelefonnr").html("");
-        }
-
-
-        if ($("#inpEpost").val() === "") {
-            $("#nullEpost").html("Du må skrive inn en epost");
-
+        if (!regexTelefon.test($("#inpTelefonnr").val())) {
+            $("#nullTelefonnr").html("Du må skrive et gyldig telefonnummer");
             validasjon = false;
         }
+
+        if (!regexEpost.test($("#inpEpost").val())) {
+            $("#nullEpost").html("Du må skrive inn en gyldig epost");
+            validasjon = false;
+        }
+
         return validasjon;
     }
 
-    if (sjekkValidasjon()==true) {
+    if (sjekkValidasjon()) {
         const billett = {
             film: $("#slctFilm").val(),
             antall: $("#inpAntall").val(),
@@ -82,25 +72,13 @@ function kjopBillett() {
             hentAlle();
         });
 
-
         function hentAlle() {
             $.get("/hentAlle", function (data) {
                 formaterData(data);
             })
-
         }
-
-        function formaterData(billetter) {
-            let ut = "<table class='table table-striped' id='tblFilmer'>";
-            ut += "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn</th><th>Telefonnummer</th><th>Epost</th></tr>";
-            for (const billett of billetter) {
-                ut += "<tr><td>" + billett.film + "</td><td>" + billett.antall + "</td><td>" + billett.fornavn + "</td><td>" + billett.etternavn + "</td><td>" + billett.tlfnr + "</td><td>" + billett.epost + "</td></tr>";
-            }
-            ut += "</table>";
-            $("#tabell").html(ut);
-        }
-
     }
+
     if ($("#slctFilm").val() !== "Velg en film") {
         $("#nullFilm").html("");
     }
@@ -114,13 +92,9 @@ function kjopBillett() {
         $("#nullEtternavn").html("");
     }
 
-
     if ($("#inpEpost").val() !== "") {
         $("#nullEpost").html("");
     }
-
-
-
 
     $("#slctFilm").prop('selectedIndex',0);
     $("#inpAntall").val("");
@@ -128,28 +102,46 @@ function kjopBillett() {
     $("#inpEtternavn").val("");
     $("#inpTelefonnr").val("");
     $("#inpEpost").val("");
-
 }
 
-function slettBillett(){
-
-    function hentAlle() {
-        $.get("hentAlle", function (data) {
-            formaterData(data);
-        })
-
+function formaterData(billetter) {
+    let ut = "<table class='table table-striped' id='tblFilmer'>";
+    ut += "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn</th><th>Telefonnummer</th><th>Epost</th><th>Handling</th></tr>";
+    for (const billett of billetter) {
+        ut += "<tr><td>" + billett.film + "</td>" +
+            "<td>" + billett.antall + "</td>" +
+            "<td>" + billett.fornavn + "</td>" +
+            "<td>" + billett.etternavn + "</td>" +
+            "<td>" + billett.tlfnr + "</td>" +
+            "<td>" + billett.epost + "</td>" +
+            "<td><button class='btn btn-danger' onclick='slettBillett(" + billett.id + ")'>Slett</button></td>" +
+            "</tr>";
     }
+    ut += "</table>";
+    $("#tabell").html(ut);
+}
 
-    function formaterData(billetter) {
-        let ut = "<table class='table table-striped' id='tblFilmer'>";
-        ut += "<tr><th>Film</th><th>Antall</th><th>Fornavn</th><th>Etternavn</th><th>Telefonnummer</th><th>Epost</th></tr>";
-        for (const billett of billetter) {
-            ut += "<tr><td>" + billett.film + "</td><td>" + billett.antall + "</td><td>" + billett.fornavn + "</td><td>" + billett.etternavn + "</td><td>" + billett.tlfnr + "</td><td>" + billett.epost + "</td></tr>";
+function hentAlle() {
+    $.get("/hentAlle", function (data) {
+        formaterData(data);
+    })
+}
+function slettBillett(id) {
+    $.ajax({
+        url: '/slett/' + id,
+        type: 'DELETE',
+        success: function () {
+            hentAlle();
         }
-        ut += "</table>";
-        $("#tabell").html(ut);
-    }
+    });
+}
+
+
+function slettBilletter(){
     $.get("/slettAlle", function (){
         hentAlle();
     });
 }
+
+
+

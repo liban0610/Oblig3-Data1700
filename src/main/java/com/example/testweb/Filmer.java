@@ -3,14 +3,14 @@ package com.example.testweb;
 public class Filmer {
     private String film;
 
+    public Filmer(){
+
+    }
     public Filmer( String film ){
 
         this.film=film;
     }
 
-    public Filmer() {
-
-    }
 
     public String getFilm() {
         return film;
