@@ -1,10 +1,13 @@
 package com.example.testweb;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,10 +47,15 @@ public class BillettController {
     }
 
     @PostMapping("/lagre")
-    public void lagreBillett(Billett innBillett){
-
-        rep.lagreBillett(innBillett);
+    public void lagreBillett(Billett innBillett, HttpServletResponse response) throws IOException {
+        if (!validerBillett(innBillett)){
+            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Feil i Validering - prøv igjen senere");
+        }  else
+        if (!rep.lagreBillett(innBillett)){
+            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Feil i DB - prøv igjen senere");
+        }
     }
+
 
     @GetMapping("/hentAlle")
     public List<Billett> hentAlle(){
