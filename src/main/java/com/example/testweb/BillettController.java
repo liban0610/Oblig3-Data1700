@@ -21,8 +21,8 @@ public class BillettController {
 
     private boolean validerBillett(Billett innBillett){
         String regexNavn = "[a-zA-ZæøåÆØÅ. \\-]{2,20}";
-        String regexTlf = "/^\\+?\\d{8,}$/";
-        String regexEpost = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/";
+        String regexTlf = "\\+?\\d{8,}";
+        String regexEpost = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
         boolean fornavnOk = innBillett.getFornavn().matches(regexNavn);
         boolean etternavnOk = innBillett.getEtternavn().matches(regexNavn);
         boolean tlfOk = innBillett.getTlfnr().matches(regexTlf);
